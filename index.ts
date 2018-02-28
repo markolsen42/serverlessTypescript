@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import {Hello} from './src/Hello';
 import {Config} from './src/Config';
+import {Dynamo} from './src/Dynamo'
 import AWS = require('aws-sdk');
 import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
 const serverless = require('serverless-http');
@@ -39,15 +40,14 @@ app.get("/write/:id/:text", (req: Request, res: Response) => {
       text: { name: req.params.text, date: new Date()}
     },
   };
-  dynamoDb.put(params, (error) => {
-    if (error){
-    console.log(error);
-  } else {
-    console.log(JSON.stringify(params));
-    res.send(JSON.stringify(params))
-  }
-  })
-
+  let dynamo = new Dynamo();
+  dynamo.write(req.params.id, req.params.text).then((result: any) => {
+    res.status(200);
+    res.send(JSON.stringify(result));
+  }).catch((error) => {
+    res.status(500);
+    res.send(JSON.stringify(error))
+  });
 })
 
 module.exports.handler = serverless(app);
