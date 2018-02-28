@@ -29,6 +29,8 @@
   "dependencies": {
     "aws-lambda": "^0.1.2",
     "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "js-yaml": "^3.10.0",
     "serverless-http": "^1.5.3"
   }
 }

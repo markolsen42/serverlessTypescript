@@ -49,9 +49,9 @@ plugins:
 #    variable1: value1
 
 # you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
+package:
+  include:
+    - config.yml
 #    - include-me-dir/**
 #  exclude:
 #    - exclude-me.js
