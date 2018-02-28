@@ -23,11 +23,6 @@ provider:
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
-package:
-  exclude:
-    - node_modules/**/*
-  include:
-    handler.ts
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
