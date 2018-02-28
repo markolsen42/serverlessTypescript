@@ -10,5 +10,9 @@ app.get('/', function (req: Request, res: Response) {
   res.send(hello.greet())
 })
 
+app.get('/goodbye', (req: Request, res: Response) => {
+  let goodbye = new Hello('Goodbye');
+  res.send(goodbye.greet());
+}
 module.exports.handler = serverless(app);
 
