@@ -6,7 +6,7 @@ export interface IConfig {
 }
 
 export class Config {
-    public values: IConfig: ;
+    public values: IConfig ;
     public constructor() {
         this.values = yaml.safeLoad(fs.readFileSync("./config.yml", "utf8"));
     }
