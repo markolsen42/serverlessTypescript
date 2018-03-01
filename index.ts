@@ -32,16 +32,19 @@ app.get('/config', (req: Request, res: Response) => {
 app.get("/write/:id/:text", (req: Request, res: Response) => {
   console.log(req.params.id);
   console.log(req.params.text);
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-   // TableName: process.env.DYNAMODB_TABLE,
-    Item: {
-      id: req.params.id,
-      text: { name: req.params.text, date: new Date()}
-    },
-  };
   let dynamo = new Dynamo();
   dynamo.write(req.params.id, req.params.text).then((result: any) => {
+    res.status(200);
+    res.send(JSON.stringify(result));
+  }).catch((error) => {
+    res.status(500);
+    res.send(JSON.stringify(error))
+  });
+})
+
+app.get("/read/:id", (req: Request, res: Response) => {
+  let dynamo = new Dynamo();
+  dynamo.read(req.params.id).then((result: any) => {
     res.status(200);
     res.send(JSON.stringify(result));
   }).catch((error) => {

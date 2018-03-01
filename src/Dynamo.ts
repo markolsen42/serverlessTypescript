@@ -36,4 +36,29 @@ export class Dynamo{
           }
           return putPromiseFn(params)
     }
+
+    public read(id:string): Promise<any>{
+  const params = {
+    ExpressionAttributeNames: {
+        "#id": "id",
+    },
+    ExpressionAttributeValues: {
+        ":id": id,
+    },
+    KeyConditionExpression: "#id = :id",
+    TableName : process.env.DYNAMODB_TABLE
+};
+const queryPromiseFn = (params: any):Promise<any> => {
+    return new Promise((resolve, reject) =>{
+        this.dynamoDb.query(params, (error, data) => {
+            if (error){
+                reject(error);
+            } else {
+                resolve(data);
+            }
+        })
+    })
+}
+    return queryPromiseFn(params);
+    }
 }
