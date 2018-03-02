@@ -21,6 +21,7 @@ provider:
   name: aws
   runtime: nodejs6.10
   stage: ${opt:stage, 'dev'}
+  profile: datacom
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   iamRoleStatements:
@@ -53,7 +54,6 @@ resources:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
     
 plugins:
-  - serverless-plugin-typescript
   - serverless-offline
 
 # you can overwrite defaults here
@@ -91,7 +91,7 @@ package:
 
 functions:
   app:
-    handler: index.handler
+    handler: build/index.handler
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'

@@ -6,7 +6,7 @@ jspm_packages
 .serverless
 
 # Typescript built dir
-.build
+build
 
 # config file (secret)
 config.yml

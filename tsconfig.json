@@ -5,6 +5,7 @@
     "lib": [ "es6", "dom" ],
     "moduleResolution": "node",
     "rootDir": "./",
+    "outDir": "./build",
     "sourceMap": true,
     "allowJs": true,
     "noImplicitAny": true,

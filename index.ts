@@ -2,14 +2,8 @@ import {Request, Response} from 'express';
 import {Hello} from './src/Hello';
 import {Config} from './src/Config';
 import {Dynamo} from './src/Dynamo'
-import AWS = require('aws-sdk');
-import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
 const serverless = require('serverless-http');
 const express = require('express');
-
-AWS.config.update({region: "us-east-1"});
-const dynamoDb: DocumentClient = new AWS.DynamoDB.DocumentClient();
-
 
 
 const app = express()
@@ -28,6 +22,7 @@ app.get('/config', (req: Request, res: Response) => {
   let config = new Config();
   res.send(config.values);
 });
+
 
 app.get("/write/:id/:text", (req: Request, res: Response) => {
   console.log(req.params.id);
