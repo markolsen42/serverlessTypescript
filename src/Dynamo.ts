@@ -13,13 +13,14 @@ export class Dynamo{
 
     private dynamoDb: DocumentClient;
 
-    public write(id: string, text: string): Promise<any>{
+    public write(id: string,name: string, topic: string, questions: any): Promise<any>{
         const params = {
             TableName: process.env.DYNAMODB_TABLE,
            // TableName: process.env.DYNAMODB_TABLE,
             Item: {
-              id: id,
-              text: { name: text, date: new Date()}
+              id: topic,
+              name: name,
+              questions: { questions}
             },
           };
 
@@ -37,8 +38,9 @@ export class Dynamo{
           return putPromiseFn(params)
     }
 
-    public read(id:string): Promise<any>{
-  const params = {
+    // made the topic eg maths the primary partition key - still called id 
+    public getQuizByTopic(id:string): Promise<any>{
+    const params = {
     ExpressionAttributeNames: {
         "#id": "id",
     },

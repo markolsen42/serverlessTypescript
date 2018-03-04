@@ -1,12 +1,35 @@
-import {Request, Response} from 'express';
+import {Request, Response, NextFunction} from 'express';
 import {Hello} from './src/Hello';
 import {Config} from './src/Config';
-import {Dynamo} from './src/Dynamo'
+import {Dynamo} from './src/Dynamo';
+const uuid = require('uuid');
 const serverless = require('serverless-http');
 const express = require('express');
+// Allow reading of body on POST with req.body
+var bodyParser = require('body-parser');
 
 
 const app = express()
+
+/****************************************
+MIDDLEWARE 
+*****************************************/
+
+
+// CORS Enablement
+app.use(function(req: Request, res: Response, next: NextFunction) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
+
+/****************************************
+ROUTES 
+*****************************************/
 
 app.get('/', function (req: Request, res: Response) {
   let hello = new Hello('World');
@@ -23,12 +46,10 @@ app.get('/config', (req: Request, res: Response) => {
   res.send(config.values);
 });
 
-
-app.get("/write/:id/:text", (req: Request, res: Response) => {
-  console.log(req.params.id);
-  console.log(req.params.text);
+app.post("/addQuiz", (req: Request, res: Response) => {
+  var id = uuid.v1();
   let dynamo = new Dynamo();
-  dynamo.write(req.params.id, req.params.text).then((result: any) => {
+  dynamo.write(id,req.body.name, req.body.topic, req.body.questions).then((result: any) => {
     res.status(200);
     res.send(JSON.stringify(result));
   }).catch((error) => {
@@ -37,11 +58,11 @@ app.get("/write/:id/:text", (req: Request, res: Response) => {
   });
 })
 
-app.get("/read/:id", (req: Request, res: Response) => {
+app.get("/getQuizByTopic/:topic", (req: Request, res: Response) => {
   let dynamo = new Dynamo();
-  dynamo.read(req.params.id).then((result: any) => {
+  dynamo.getQuizByTopic(req.params.topic).then((result: any) => {
     res.status(200);
-    res.send(JSON.stringify(result));
+    res.send(JSON.stringify(result.Items));
   }).catch((error) => {
     res.status(500);
     res.send(JSON.stringify(error))
