@@ -1,5 +1,7 @@
 import AWS = require('aws-sdk');
 import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
+import {Quiz} from "./model/quiz";
+import {QuizItem, AnswerOption} from "./model/quiz-item"
 
 export interface IHttpResponseCodes{
     code: number;
@@ -14,6 +16,14 @@ export class Dynamo{
     private dynamoDb: DocumentClient;
 
     public write(id: string,name: string, topic: string, questions: any): Promise<any>{
+        // console.log("markolsen")
+        // var ao1 = new AnswerOption("a", "first option");
+        // var ao2 = new AnswerOption("b", "second option");
+        // var qi = new QuizItem( "this is the question", [ao1, ao2]);
+        // var ao1a = new AnswerOption("aa", "second first option ");
+        // var ao2a = new AnswerOption("bb", "second second option");
+        // var qia = new QuizItem( "this is the question", [ao1a, ao2a])
+        // var q = new Quiz("quiz1", [qi,qia]);
         const params = {
             TableName: process.env.DYNAMODB_TABLE,
            // TableName: process.env.DYNAMODB_TABLE,

@@ -1,0 +1,9 @@
+example post input for addQuiz
+
+POST /addQuiz HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+Cache-Control: no-cache
+Postman-Token: 5f70b8f6-13c7-815e-647a-ab14413b4518
+
+{"id":"maths","name":"quiz1","questions":{"q":{"quizItems":[{"question":"this is the question","answerOptions":[{"possibleAnswer":"first option","label":"a"},{"possibleAnswer":"second option","label":"b"}]},{"question":"this is the question","answerOptions":[{"possibleAnswer":"second first option ","label":"aa"},{"possibleAnswer":"second second option","label":"bb"}]}],"id":"quiz1"}}}
