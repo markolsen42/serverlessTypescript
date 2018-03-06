@@ -13,12 +13,12 @@ export class Dynamo{
 
     private dynamoDb: DocumentClient;
 
-    public write(id: string,name: string, topic: string, questions: any): Promise<any>{
+    public write(topic: string, name: string, questions: any): Promise<any>{
         const params = {
             TableName: process.env.DYNAMODB_TABLE,
            // TableName: process.env.DYNAMODB_TABLE,
             Item: {
-              id: topic,
+              topic: topic,
               name: name,
               questions: { questions}
             },
@@ -39,15 +39,15 @@ export class Dynamo{
     }
 
     // made the topic eg maths the primary partition key - still called id 
-    public getQuizByTopic(id:string): Promise<any>{
+    public getQuizByTopic(topic: string): Promise<any>{
     const params = {
     ExpressionAttributeNames: {
-        "#id": "id",
+        "#topic": "topic",
     },
     ExpressionAttributeValues: {
-        ":id": id,
+        ":topic": topic,
     },
-    KeyConditionExpression: "#id = :id",
+    KeyConditionExpression: "#topic = :topic",
     TableName : process.env.DYNAMODB_TABLE
 };
 const queryPromiseFn = (params: any):Promise<any> => {

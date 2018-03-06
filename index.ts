@@ -49,7 +49,7 @@ app.get('/config', (req: Request, res: Response) => {
 app.post("/addQuiz", (req: Request, res: Response) => {
   var id = uuid.v1();
   let dynamo = new Dynamo();
-  dynamo.write(id,req.body.name, req.body.id, req.body.questions).then((result: any) => {
+  dynamo.write( req.body.topic, req.body.name, req.body.questions).then((result: any) => {
     res.status(200);
     res.send(JSON.stringify(result));
   }).catch((error) => {
