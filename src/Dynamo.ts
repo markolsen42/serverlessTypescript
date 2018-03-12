@@ -67,30 +67,50 @@ export class Dynamo{
             console.log(err);
         })
     }
+    private queryPromiseFn = (params: any):Promise<any> => {
+        return new Promise((resolve, reject) =>{
+            this.dynamoDb.query(params, (error, data) => {
+                if (error){
+                    reject(error);
+                } else {
+                    resolve(data);
+                }
+            })
+        })
+    }
 
     // made the topic eg maths the primary partition key - still called id 
     public getQuizByTopic(topic: string): Promise<any>{
-    const params = {
-    ExpressionAttributeNames: {
-        "#topic": "topic",
-    },
-    ExpressionAttributeValues: {
-        ":topic": topic,
-    },
-    KeyConditionExpression: "#topic = :topic",
-    TableName : process.env.DYNAMODB_TABLE
-};
-const queryPromiseFn = (params: any):Promise<any> => {
-    return new Promise((resolve, reject) =>{
-        this.dynamoDb.query(params, (error, data) => {
-            if (error){
-                reject(error);
-            } else {
-                resolve(data);
-            }
-        })
-    })
-}
-    return queryPromiseFn(params);
+        const params = {
+        ExpressionAttributeNames: {
+            "#topic": "topic",
+        },
+        ExpressionAttributeValues: {
+            ":topic": topic,
+        },
+        KeyConditionExpression: "#topic = :topic",
+        TableName : process.env.DYNAMODB_QUIZ_TABLE
+    };
+
+
+        return this.queryPromiseFn(params);
+    }
+
+    public getAnswerOptions(quizName: string, questionNo: number): Promise<any> {
+            //bpid-> quizname cachetype=questionno
+            const params = {
+                ExpressionAttributeNames: {
+                  "#quizName": "quizName",
+                  "#questionNo": "questionNo",
+                },
+                ExpressionAttributeValues: {
+                  ":quizName": quizName,
+                  ":questionNo": questionNo,
+                },
+                KeyConditionExpression: "#quizName = :quizName and #questionNo = :questionNo",
+                TableName: process.env.DYNAMODB_QUESTION_TABLE,
+              };
+
+            return this.queryPromiseFn(params)
     }
 }

@@ -2,9 +2,7 @@ import {Request, Response, NextFunction} from 'express';
 import {Hello} from './src/Hello';
 import {Config} from './src/Config';
 import {Dynamo} from './src/Dynamo';
-import {Quiz} from './src/model/quiz'
-import { Question, AnswerOption, AnswerOptions } from './src/model/quiz-item';
-import {Promise} from 'bluebird';
+
 
 const uuid = require('uuid');
 const serverless = require('serverless-http');
@@ -19,6 +17,7 @@ const app = express()
 MIDDLEWARE 
 *****************************************/
 
+let dynamo = new Dynamo();
 
 // CORS Enablement
 app.use(function(req: Request, res: Response, next: NextFunction) {
@@ -51,8 +50,6 @@ app.get('/config', (req: Request, res: Response) => {
 });
 
 app.post("/addQuiz", (req: Request, res: Response) => {
-  let dynamo = new Dynamo();
-  var questions = req.body.questions;
   dynamo.write( req.body.quiz, req.body.questions).then((result: any) => {
     res.status(200).send(JSON.stringify(result));
   }).catch((error) => {
@@ -61,7 +58,7 @@ app.post("/addQuiz", (req: Request, res: Response) => {
 })
 
 app.get("/getQuizByTopic/:topic", (req: Request, res: Response) => {
-  let dynamo = new Dynamo();
+  
   dynamo.getQuizByTopic(req.params.topic).then((result: any) => {
     res.status(200);
     res.send(JSON.stringify(result.Items));
@@ -70,6 +67,19 @@ app.get("/getQuizByTopic/:topic", (req: Request, res: Response) => {
     res.send(JSON.stringify(error))
   });
 })
+
+app.get("/getAnswerOptions/:quizName/:questionNo", (req: Request, res: Response) => {
+    dynamo.getAnswerOptions(req.params.quizName, req.params.questionNo)
+    .then((result: any) => {
+      res.status(200);
+      res.send(JSON.stringify(result.Items));
+    }).catch((error) => {
+      res.status(500);
+      res.send(JSON.stringify(error))
+    });
+})
+
+
 
 module.exports.handler = serverless(app);
 
