@@ -1,5 +1,7 @@
 import AWS = require('aws-sdk');
 import {DocumentClient} from "aws-sdk/lib/dynamodb/document_client";
+import {Quiz} from './model/quiz'
+import {Question} from './model/quiz-item'
 
 export interface IHttpResponseCodes{
     code: number;
@@ -13,14 +15,17 @@ export class Dynamo{
 
     private dynamoDb: DocumentClient;
 
-    public write(topic: string, name: string, questions: any): Promise<any>{
+    public write(quiz: Quiz, questions: Question[]): Promise<any>{
+        console.log(quiz);
+        console.log("markolsen" + process.env.DYNAMODB_QUIZ_TABLE);
         const params = {
-            TableName: process.env.DYNAMODB_TABLE,
+            TableName: process.env.DYNAMODB_QUIZ_TABLE,
            // TableName: process.env.DYNAMODB_TABLE,
             Item: {
-              topic: topic,
-              name: name,
-              questions: { questions}
+              topic: quiz.topic,
+              level: quiz.level,
+              quizName: quiz.quizName,
+              numberOfQuestions: quiz.numberOfQuestions,
             },
           };
 
@@ -28,6 +33,7 @@ export class Dynamo{
               return new Promise((resolve, reject) =>{
                   this.dynamoDb.put(params, (error, data) => {
                       if (error){
+                          console.log("markolsen" +error)
                           reject(error);
                       } else {
                           resolve(data);
