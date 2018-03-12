@@ -50,6 +50,7 @@ app.get('/config', (req: Request, res: Response) => {
 });
 
 app.post("/addQuiz", (req: Request, res: Response) => {
+  console.log("markolsen" + JSON.stringify(req.body));
   dynamo.write( req.body.quiz, req.body.questions).then((result: any) => {
     res.status(200).send(JSON.stringify(result));
   }).catch((error) => {

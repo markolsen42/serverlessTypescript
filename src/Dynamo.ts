@@ -16,14 +16,14 @@ export class Dynamo{
     private dynamoDb: DocumentClient;
 
     public write(quiz: Quiz, questions: Question[]): Promise<any>{
+        console.log("markolsen" + quiz)
         //for writing a line to the quiz table
         const quizParams = {
             TableName: process.env.DYNAMODB_QUIZ_TABLE,
            // TableName: process.env.DYNAMODB_TABLE,
             Item: {
-              topic: quiz.topic,
-              level: quiz.level,
-              quizName: quiz.quizName,
+              topic: quiz.topic + '-' + quiz.level,
+              name: quiz.quizName,
               numberOfQuestions: questions.length,
             },
           };

@@ -23,8 +23,8 @@ provider:
   stage: ${opt:stage, 'dev'}
   profile: datacom
   environment:
-    DYNAMODB_QUIZ_TABLE: ${self:service}-quiz-${opt:stage, self:provider.stage}
-    DYNAMODB_QUESTION_TABLE: ${self:service}-questions-${opt:stage, self:provider.stage}
+    DYNAMODB_QUIZ_TABLE: marks-quiz-${opt:stage, self:provider.stage}
+    DYNAMODB_QUESTION_TABLE: marks-question-${opt:stage, self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -53,12 +53,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: topic
             AttributeType: S
-          - AttributeName: level
-            AttributeType: N
+          - AttributeName: name
+            AttributeType: S
         KeySchema:
           - AttributeName: topic
             KeyType: HASH
-          - AttributeName: level
+          - AttributeName: name
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
