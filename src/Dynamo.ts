@@ -16,30 +16,56 @@ export class Dynamo{
     private dynamoDb: DocumentClient;
 
     public write(quiz: Quiz, questions: Question[]): Promise<any>{
-        const params = {
+        //for writing a line to the quiz table
+        const quizParams = {
             TableName: process.env.DYNAMODB_QUIZ_TABLE,
            // TableName: process.env.DYNAMODB_TABLE,
             Item: {
               topic: quiz.topic,
               level: quiz.level,
               quizName: quiz.quizName,
-              numberOfQuestions: quiz.numberOfQuestions,
+              numberOfQuestions: questions.length,
             },
           };
+          // for creating a promise that when this resolves the write to dynamo is done
+          // can pass in params for either quiz or questions
+          let putPromiseFn = (params: any):Promise<any> => {
+            return new Promise((resolve, reject) =>{
+                this.dynamoDb.put(params, (error, data) => {
+                    if (error){
+                        console.log("error" +error)
+                        reject(error);
+                    } else {
+                        resolve(data);
+                    }
+                })
+            })
+        }
 
-          const putPromiseFn = (params: any):Promise<any> => {
-              return new Promise((resolve, reject) =>{
-                  this.dynamoDb.put(params, (error, data) => {
-                      if (error){
-                          console.log("markolsen" +error)
-                          reject(error);
-                      } else {
-                          resolve(data);
-                      }
-                  })
-              })
-          }
-          return putPromiseFn(params)
+        // array to store promises which will write to the questions table as many times as 
+        // there are questions input
+        const questionPromiseArray: Promise<any>[] = [];
+
+        //function that fills up the questionPromiseArray with the passed in questions
+        questions.forEach((elem, index) =>{
+        const questionsParams = {
+            TableName: process.env.DYNAMODB_QUESTION_TABLE,
+                Item: {
+                quizName: quiz.topic +'-'+ quiz.level +'-' +quiz.quizName,
+                questionNo: index,
+                question: elem.question,
+                answer: elem.answer,
+                options: elem.options,
+                },
+            };
+            questionPromiseArray.push(putPromiseFn(questionsParams));
+        })
+        return putPromiseFn(quizParams)
+        .then(()=>{
+        return Promise.all(questionPromiseArray)
+        }).catch(err=>{
+            console.log(err);
+        })
     }
 
     // made the topic eg maths the primary partition key - still called id 

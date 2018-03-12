@@ -51,25 +51,12 @@ app.get('/config', (req: Request, res: Response) => {
 });
 
 app.post("/addQuiz", (req: Request, res: Response) => {
-  var id = uuid.v1();
   let dynamo = new Dynamo();
-  //let quiz = new Quiz("maths", 1, "firstMathsQuiz", 3);
-  // const answerOptions = new AnswerOptions();
-  // answerOptions.add(new AnswerOption('a', "1" ));
-  // answerOptions.add(new AnswerOption('b', "2" ));
-  // answerOptions.add(new AnswerOption('c', "3" ));
-  // answerOptions.add(new AnswerOption('d', "4" ));
-
-
-  // let question = new Question("maths-firstMathsQuiz", 1,"What is 1+1?", answerOptions, 'b');
- //console.log(JSON.stringify(question))
- console.log(JSON.stringify(req.body));
-  dynamo.write( req.body.quiz, []).then((result: any) => {
-    res.status(200);
-    res.send(JSON.stringify(result));
+  var questions = req.body.questions;
+  dynamo.write( req.body.quiz, req.body.questions).then((result: any) => {
+    res.status(200).send(JSON.stringify(result));
   }).catch((error) => {
-    res.status(error.statusCode);
-    res.send(JSON.stringify(error))
+    res.status(error.statusCode).send(JSON.stringify(error))
   });
 })
 
