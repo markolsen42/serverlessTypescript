@@ -16,8 +16,6 @@ export class Dynamo{
     private dynamoDb: DocumentClient;
 
     public write(quiz: Quiz, questions: Question[]): Promise<any>{
-        console.log(quiz);
-        console.log("markolsen" + process.env.DYNAMODB_QUIZ_TABLE);
         const params = {
             TableName: process.env.DYNAMODB_QUIZ_TABLE,
            // TableName: process.env.DYNAMODB_TABLE,
